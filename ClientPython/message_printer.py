@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import pendulum
+import json
 
 broker_address = "test.mosquitto.org"
 broker_port = 1883
@@ -13,9 +14,12 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    print('message received')
     now = pendulum.now()
-    print(msg.topic + ' ' + str(msg.payload), now.timestamp())
+    data = json.loads(msg.payload)
+
+    print_string = 'Message topic {0}, Random number generated: {1}, Sent timestamp: {2},' \
+                   ' Received timestamp: {3}'.format(msg.topic, data['rng'], data['timestamp'], now.timestamp())
+    print(print_string)
 
 
 client = mqtt.Client()

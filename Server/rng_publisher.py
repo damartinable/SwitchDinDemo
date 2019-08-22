@@ -4,6 +4,9 @@ import random
 import pendulum
 import json
 
+broker_address = "test.mosquitto.org"
+broker_port = 1883
+broker_topic = 'rng_example'
 
 def on_message(client, userdata, message):
     print("message received ", str(message.payload.decode("utf-8")))
@@ -16,19 +19,11 @@ def on_connect(client, userdata, flags, rc):
     print('Connected with results code ' + str(rc))
 
 
-broker_address = "test.mosquitto.org"
-broker_port = 1883
-broker_topic = 'rng_example'
-
-# print("creating new instance")
 client = mqtt.Client("test server")  # create new instance
 client.on_message = on_message  # attach function to callback
-client.on_connect = on_connect
-# print("connecting to broker")
+client.on_connect = on_connect  # attach function to callback
 
 client.connect(broker_address, broker_port)  # connect to broker
-
-print("Subscribing to topic", broker_topic)
 client.subscribe(broker_topic)
 
 while True:
@@ -37,7 +32,6 @@ while True:
 
     now = pendulum.now()
     rng = random.randint(0, 100)
-    print(rng)
 
     message = {
         'timestamp': now.timestamp(),
@@ -47,5 +41,5 @@ while True:
     print(message)
 
     client.publish(broker_topic, json.dumps(message))
-    time.sleep(30)  # wait
+    time.sleep(5)  # wait
     client.loop_stop()  # stop the loop
