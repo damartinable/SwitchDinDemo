@@ -7,6 +7,7 @@ broker_port = 1883
 broker_topic = 'rng_example'
 
 
+# Callback functions adapted from example documentation
 def on_connect(client, userdata, flags, rc):
     print('Connected with results code ' + str(rc))
 
@@ -22,10 +23,16 @@ def on_message(client, userdata, msg):
     print(print_string)
 
 
+# Init the client
 client = mqtt.Client()
+
+# Register callbacks
 client.on_connect = on_connect
 client.on_message = on_message
 
+# Connect to broker address.
 client.connect(broker_address, broker_port, 60)
 
+# Simple demonstrative loop, needs a huge amount of improvement and features,
+# reconnecting, errors, etc.
 client.loop_forever()

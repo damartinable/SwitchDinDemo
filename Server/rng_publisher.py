@@ -4,10 +4,14 @@ import random
 import pendulum
 import json
 
+
+# Config needs to be improved to use a script or framework.
 broker_address = "test.mosquitto.org"
 broker_port = 1883
 broker_topic = 'rng_example'
 
+
+# Callback functions adapted from example documentation
 def on_message(client, userdata, message):
     print("message received ", str(message.payload.decode("utf-8")))
     print("message topic=", message.topic)
@@ -26,6 +30,8 @@ client.on_connect = on_connect  # attach function to callback
 client.connect(broker_address, broker_port)  # connect to broker
 client.subscribe(broker_topic)
 
+# Simple loop to keep sending messages every 5 seconds. Needs a lot of improvement.
+# Error handling, reconnecting, etc
 while True:
     client.loop_start()  # start the loop
     print("Publishing message to topic", broker_topic)
@@ -33,6 +39,7 @@ while True:
     now = pendulum.now()
     rng = random.randint(0, 100)
 
+    # Simple message including the random int and timestamp.
     message = {
         'timestamp': now.timestamp(),
         'rng': rng
